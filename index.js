@@ -15,11 +15,6 @@ const client =
 
 function fetchDuplicates(name) {
   const query = SPARQL`
-    PREFIX nyt: <http://data.nytimes.com/>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-    PREFIX geop: <http://www.geonames.org/ontology#>
-
     SELECT ?LocationA ?nameA ?LocationB ?nameB
     FROM <http://data.nytimes.com>
     WHERE {
