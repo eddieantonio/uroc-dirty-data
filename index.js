@@ -1,10 +1,5 @@
-const assert = require('assert');
-
 const SparqlClient = require('sparql-client-2');
 const SPARQL = SparqlClient.SPARQL;
-
-// Degrees, long/lat -- note: this is entirely arbirtray.
-const WINDOW_SIZE = 0.1;
 
 const client =
   new SparqlClient('http://husky-big.cs.uwaterloo.ca:8890/sparql')
@@ -15,12 +10,13 @@ const client =
       ny: 'http://data.nytimes.com/',
       owl: 'http://www.w3.org/2002/07/owl#',
       geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
-      geop: 'http://www.geonames.org/ontology#'
+      ont: 'http://www.geonames.org/ontology#'
     });
 
 function longestString(val1, val2) {
   return (val1.length > val2.length) ? val1 : val2;
 }
+
 function replaceItude(itude) {
   return function () {
     const query = `
