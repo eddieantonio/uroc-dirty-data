@@ -21,41 +21,44 @@ const client =
 function longestString(val1, val2) {
   return (val1.length > val2.length) ? val1 : val2;
 }
+function replaceItude(itude) {
+  return function () {
+    const query = `
+      SELECT ?LocationA ?LongitudeA datatype(?LongitudeA) AS ?TypeA
+             ?LocationB ?LongitudeB datatype(?LongitudeB) AS ?TypeB
+      FROM <http://data.nytimes.com>
+      WHERE {
+        ?LocationA owl:sameAs ?LocationB .
 
-function replaceLongitude(name) {
-  const query = SPARQL`
-    SELECT ?LocationA ?LongitudeA datatype(?LongitudeA) AS ?TypeA
-           ?LocationB ?LongitudeB datatype(?LongitudeB) AS ?TypeB
-    FROM <http://data.nytimes.com>
-    WHERE {
-      ?LocationA owl:sameAs ?LocationB .
+        ?LocationA geo:${itude}    ?LongitudeA .
+        ?LocationB geo:${itude} ?LongitudeB .
+        FILTER(?LongitudeA != ?LongitudeB)
+      }
+    `;
 
-      ?LocationA geo:long   ?LongitudeA .
-      ?LocationB geo:long   ?LongitudeB .
-      FILTER(?LongitudeA != ?LongitudeB)
-    }
-  `;
+    return client
+      .query(query)
+      .execute()
+      // Get the item we want.
+      .then(response => {
+        const locations = response.results.bindings;
 
-  return client
-    .query(query)
-    .execute()
-    // Get the item we want.
-    .then(response => {
-      const locations = response.results.bindings;
+        locations.forEach(location => {
+          const measurement = longestString(location.LongitudeA.value,
+                                            location.LongitudeB.value);
+          const id = location.LocationA;
+          console.log(SPARQL`${id} ${{geo: itude}} ${measurement} .`);
+        });
 
-      locations.forEach(location => {
-        const measurement = longestString(location.LongitudeA.value,
-                                          location.LongitudeB.value);
-        const id = location.LocationA;
-        console.log(SPARQL`${id} geo:lat ${measurement} .`);
+      })
+      .catch(error => {
+        console.dir(error);
+        throw error;
       });
-
-    })
-    .catch(error => {
-      console.dir(error);
-      throw error;
-    });
+  };
 }
 
-console.log('Finding potential duplicates...');
+const replaceLatitude = replaceItude('lat');
+const replaceLongitude = replaceItude('long');
+replaceLatitude();
 replaceLongitude();
