@@ -20,8 +20,7 @@ function longestString(val1, val2) {
 function replaceItude(itude) {
   return function () {
     const query = `
-      SELECT ?LocationA ?LongitudeA datatype(?LongitudeA) AS ?TypeA
-             ?LocationB ?LongitudeB datatype(?LongitudeB) AS ?TypeB
+      SELECT ?LocationA ?LongitudeA ?LocationB ?LongitudeB
       FROM <http://data.nytimes.com>
       WHERE {
         ?LocationA owl:sameAs ?LocationB .

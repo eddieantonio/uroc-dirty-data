@@ -1,0 +1,19 @@
+PREFIX ont: <http://dbpedia.org/ontology/>
+PREFIX prop: <http://dbpedia.org/property/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?o, ?nn as ?fullName, ?n1 as ?givenName, ?n2 as ?lastName
+FROM <http://dbpedia.org>
+WHERE {
+   ?s a ont:Person ;
+      ont:birthDate ?o ;
+      foaf:givenName ?n1 ;
+      prop:name ?nn ;
+      foaf:surname ?n2 .
+   ?s2 foaf:givenName ?n1 ;
+       foaf:surname ?n2 ;
+       ont:birthDate ?o
+  FILTER (?s != ?s2)
+} LIMIT 10
+
